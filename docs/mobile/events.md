@@ -63,4 +63,41 @@ The event name MUST be `device.app.lifecycle`.
 | `foreground` | Any time after Activity.onResume() or, if the app has no Activity, Context.startService() has been called when the app was in either the created or background states. |
 <!-- endsemconv -->
 
+## Android ANR
+
+When a client app is not responsive, instrumentation can emit an ANR event. This is an important
+event because it helps developers know when their application is having user-facing performance 
+problems. An periodic application-level watchdog is sometimes used to implement the ANR detector. 
+
+`event.name`: `otel.client.anr`
+
+Event payload:
+
+| Field         | Type     | Description                                                            |
+|---------------|----------|------------------------------------------------------------------------|
+| `threshold`   | double   | Number of unresponsive seconds before the ANR was detected.            | 
+| `stacktrace`  | String   | The stack trace of the main thread at the time the ANR was detected.   |
+
+## Slow Renders / UI Jank
+
+When a user perceives screen flicker due to frame rendering being blocked or delayed, this is called 
+[_jank_](https://developer.android.com/studio/profile/jank-detection).
+Detecting and reporting jank is an important feature for mobile instrumentation, because it helps 
+developers streamline their code and improve the user experience.
+
+The following event is defined for detecting and reporting jank:
+
+`event.name`: `otel.screen.slow-renders-detected`
+
+This event indicates that the mobile device detected slow screen renders.
+
+Event payload: 
+
+| Field  | Type   | Description |
+|--------|--------|-------------|
+| `slow-count`   | long   | The number of renders that took longer than the slow threshold but shorter than the frozen threshold (tbd defined elsewhere). |
+| `frozen-count` | long   | The number of renders that took longer than the frozen threshold. |
+| `activity`     | String | The name of the activity that was present when the detection occurred. This may not necessarily be the same activity that was active during the slow rendering interval. |
+
+
 [DocumentStatus]: https://github.com/open-telemetry/opentelemetry-specification/tree/v1.22.0/specification/document-status.md
