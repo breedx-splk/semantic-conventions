@@ -1,11 +1,102 @@
+<!DOCTYPE>
+<html>
+<head>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js" integrity="sha384-ndDqU0Gzau9qJ1lfW4pNLlhNTkCfHzAVBReH9diLvGRem5+R9g2FzA8ZGN954O5Q" crossorigin="anonymous"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+    body {
+        margin: 3em;
+    }
+    .metric-card {
+        margin-top: 1em;
+        padding: 1em;
+    }
+    .note {
+        padding: 1em;
+        border: solid 1px #00009922;
+    }
+    </style>
+    <script type="application/javascript">
+    </script>
+</head>
+<body>
+<h1>otel metrics</h1>
+<hr>
+<div>
+    search: 
+    <input type="text" name="search"/>
+    <div class="dropdown">
+      <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+        Dropdown button
+      </button>
+      <ul class="dropdown-menu">
+        <li><a class="dropdown-item" href="#">Action</a></li>
+        <li><a class="dropdown-item" href="#">Another action</a></li>
+        <li><a class="dropdown-item" href="#">Something else here</a></li>
+      </ul>
+    </div>
+</div>
+<hr>
 {% for metric in ctx %}
-name: {{ metric.metric_name }}
-brief: {{ metric.brief }}
-note: {{ metric.note }}
-unit: {{ metric.unit }}
-stability: {{ metric.stability }}
-attributes: {{ metric.attributes }}
-{{metric}}
-
+<div id="{{ metric.id }}" class="border metric-card">
+    <h2>{{ metric.metric_name }}</h2>
+    <p>
+        <span class="fw-bold">Instrument:</span>
+        {{ metric.instrument }}
+        {% if metric.annotations %}
+            ({{ metric.annotations.code_generation.metric_value_type }})
+        {% endif %}
+        {% if metric.unit %}
+            <br/><span class="fw-bold">Unit:</span> {{ metric.unit }}
+        {% endif %}
+        <br/>
+        <span class="fw-bold">Stability:</span>
+        {% if metric.stability == 'stable' %}
+            <span class="text-success">
+        {% else %}
+            <span>
+        {% endif %}
+        {{ metric.stability }}</span>
+    </p>
+    {% if 'Deprecated' in metric.brief %}
+    <p class="text-danger">
+    {% else %}
+    <p>
+    {% endif %}
+        {{ metric.brief }}
+    </p>
+    {% if metric.note %}
+    <div class="note">Note: <span class="fst-italic">{{ metric.note }}</span></div>
+    {% endif %}
+    
+    {% if metric.attributes %}
+    <!-- TODO: Make this contain the same data as the other tables -->
+    <table class="table table-sm">
+        <tr>
+            <th>name</th>
+            <th>desc</th>
+            <th>required</th>
+            <th>stability</th>
+            <th>examples</th>
+        </tr>
+        {% for attr in metric.attributes %}
+        <tr>
+            <td class="font-monospace">{{ attr.name }}</td>
+            <td>{{ attr.brief }}</td>
+            <td>{{ attr.requirement_level }}</td>
+            <td>{{ attr.stability }}</td>
+            <td>{{ attr.examples }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% endif %}
+    groupy: <span class="source-group xvisually-hidden">{{ metric.source_group }}</span>
+    <!-- <p>attributes: {{ metric.attributes }}</p> -->
+    <!-- TODO: Remove me --> 
+    <p class="visually-hidden">{{ metric }}</p>
+</div>
 
 {% endfor %}
+</body>
+</html>
