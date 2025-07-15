@@ -1,0 +1,11 @@
+{% for metric in ctx %}
+name: {{ metric.metric_name }}
+brief: {{ metric.brief }}
+note: {{ metric.note }}
+unit: {{ metric.unit }}
+stability: {{ metric.stability }}
+attributes: {{ metric.attributes }}
+{{metric}}
+
+
+{% endfor %}

@@ -1,0 +1,8 @@
+templates:
+  - pattern: metrics.j2
+    filter: '.groups | map(select(.type == "metric"))'
+    application_mode: single
+#    application_mode: each
+#    file_name: 'namespaces/{{ctx.namespace | kebab_case }}/{{ ctx.id | kebab_case }}.md'
+#    file_name: '{{ctx.metric_name}}.md'
+    file_name: 'megatron.txt'
